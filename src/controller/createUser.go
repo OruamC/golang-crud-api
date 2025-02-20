@@ -12,7 +12,7 @@ func CreateUser(c *gin.Context) {
 
 	if err := c.ShouldBindJSON(&userRequest); err != nil {
 		restErr := rest_err.NewBadRequestError(
-			fmt.Sprintf("There are some incorrect fields, error=%s", err.Error()))
+			fmt.Sprintf("Some incorrect fields, error=%s", err.Error()))
 
 		c.JSON(restErr.Code, restErr)
 		return
