@@ -33,14 +33,14 @@ func init() {
 }
 
 func Info(message string, tags ...zap.Field) {
+	defer log.Sync()
 	log.Info(message, tags...)
-	log.Sync()
 }
 
 func Error(message string, err error, tags ...zap.Field) {
+	defer log.Sync()
 	tags = append(tags, zap.NamedError("error", err))
 	log.Error(message, tags...)
-	log.Sync()
 }
 
 func getOutputLogs() string {

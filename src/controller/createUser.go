@@ -4,7 +4,7 @@ import (
 	"github.com/OruamC/golang-crud-api/src/configuration/logger"
 	"github.com/OruamC/golang-crud-api/src/configuration/validation"
 	"github.com/OruamC/golang-crud-api/src/controller/model/request"
-	"github.com/OruamC/golang-crud-api/src/controller/model/response"
+	"github.com/OruamC/golang-crud-api/src/model"
 	"github.com/gin-gonic/gin"
 	"go.uber.org/zap"
 	"net/http"
@@ -22,12 +22,14 @@ func CreateUser(c *gin.Context) {
 		return
 	}
 
-	logger.Info("User created succesfully", zap.String("journey", "createUser"))
-	responseUser := response.UserResponse{
-		ID:    "1",
-		Email: userRequest.Email,
-		Name:  userRequest.Name,
-		Age:   userRequest.Age,
+	domain := model.NewUserDomain(userRequest.Email, userRequest.Password, userRequest.Name, userRequest.Age)
+
+	if err := domain.CreateUser(); err != nil {
+		logger.Error("Error trying to create user", err, zap.String("journey", "createUser"))
+		c.JSON(err.Code, err)
+		return
 	}
-	c.JSON(http.StatusCreated, responseUser)
+
+	logger.Info("User created succesfully", zap.String("journey", "createUser"))
+	c.String(http.StatusCreated, "")
 }
