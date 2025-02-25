@@ -1,6 +1,7 @@
 package main
 
 import (
+	"github.com/OruamC/golang-crud-api/src/configuration/database/mongodb"
 	"github.com/OruamC/golang-crud-api/src/configuration/logger"
 	"github.com/OruamC/golang-crud-api/src/controller"
 	"github.com/OruamC/golang-crud-api/src/controller/routes"
@@ -15,6 +16,8 @@ func main() {
 	if err != nil {
 		logger.Error("Error loading .env file", err)
 	}
+
+	mongodb.InitConnection()
 
 	serviceDomain := service.NewUserDomainService()
 	userController := controller.NewUserControllerInterface(serviceDomain)
