@@ -2,26 +2,33 @@ package mongodb
 
 import (
 	"context"
-	"github.com/OruamC/golang-crud-api/src/configuration/logger"
 	"go.mongodb.org/mongo-driver/v2/mongo"
 	"go.mongodb.org/mongo-driver/v2/mongo/options"
+	"os"
 )
 
-func InitConnection() {
-	ctx := context.Background()
-	client, err := mongo.Connect(options.Client().ApplyURI("mongodb://localhost:27017"))
+var (
+	MONGODB_URL      = "MONGODB_URL"
+	MONGODB_USERS_DB = "MONGODB_USERS_DB"
+)
+
+func NewMongoDBConnection(ctx context.Context) (*mongo.Database, error) {
+	mongodbUri := os.Getenv(MONGODB_URL)
+	mongodbUersdb := os.Getenv(MONGODB_USERS_DB)
+
+	client, err := mongo.Connect(options.Client().ApplyURI(mongodbUri))
 	defer func() {
 		if err := client.Disconnect(ctx); err != nil {
 			panic(err)
 		}
 	}()
 	if err != nil {
-		panic(err)
+		return nil, err
 	}
 
 	if err := client.Ping(ctx, nil); err != nil {
-		panic(err)
+		return nil, err
 	}
 
-	logger.Info("Connected to MongoDB")
+	return client.Database(mongodbUersdb), nil
 }
