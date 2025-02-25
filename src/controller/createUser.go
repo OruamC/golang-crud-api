@@ -25,8 +25,8 @@ func CreateUser(c *gin.Context) {
 
 	domain := model.NewUserDomain(userRequest.Email, userRequest.Password, userRequest.Name, userRequest.Age)
 
-	service := service.NewUserDomainService()
-	if err := service.CreateUser(domain); err != nil {
+	domainService := service.NewUserDomainService()
+	if err := domainService.CreateUser(domain); err != nil {
 		logger.Error("Error trying to create user", err, zap.String("journey", "createUser"))
 		c.JSON(err.Code, err)
 		return
