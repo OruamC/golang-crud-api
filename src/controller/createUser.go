@@ -5,6 +5,7 @@ import (
 	"github.com/OruamC/golang-crud-api/src/configuration/validation"
 	"github.com/OruamC/golang-crud-api/src/controller/model/request"
 	"github.com/OruamC/golang-crud-api/src/model"
+	"github.com/OruamC/golang-crud-api/src/model/service"
 	"github.com/gin-gonic/gin"
 	"go.uber.org/zap"
 	"net/http"
@@ -24,7 +25,8 @@ func CreateUser(c *gin.Context) {
 
 	domain := model.NewUserDomain(userRequest.Email, userRequest.Password, userRequest.Name, userRequest.Age)
 
-	if err := domain.CreateUser(); err != nil {
+	service := service.NewUserDomainService()
+	if err := service.CreateUser(domain); err != nil {
 		logger.Error("Error trying to create user", err, zap.String("journey", "createUser"))
 		c.JSON(err.Code, err)
 		return
