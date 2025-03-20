@@ -17,11 +17,7 @@ func NewMongoDBConnection(ctx context.Context) (*mongo.Database, error) {
 	mongodbUersdb := os.Getenv(MONGODB_USERS_DB)
 
 	client, err := mongo.Connect(options.Client().ApplyURI(mongodbUri))
-	defer func() {
-		if err := client.Disconnect(ctx); err != nil {
-			panic(err)
-		}
-	}()
+
 	if err != nil {
 		return nil, err
 	}
