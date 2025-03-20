@@ -7,17 +7,14 @@ import (
 	"github.com/OruamC/golang-crud-api/src/model"
 	"github.com/OruamC/golang-crud-api/src/model/repository/entity/converter"
 	"go.mongodb.org/mongo-driver/v2/bson"
+	"go.uber.org/zap"
 	"os"
-)
-
-const (
-	MONGODB_USER_DB = "MONGODB_USER_COLLECTION"
 )
 
 func (ur *userRepository) CreateUser(
 	userDomain model.UserDomainInterface,
 ) (model.UserDomainInterface, *rest_err.RestErr) {
-	logger.Info("Init createUser repository")
+	logger.Info("Init createUser repository", zap.String("journey", "createUser"))
 	collectionName := os.Getenv(MONGODB_USER_DB)
 
 	collection := ur.databaseConnection.Collection(collectionName)
@@ -29,7 +26,7 @@ func (ur *userRepository) CreateUser(
 		logger.Error("Error getting json value", err)
 		return nil, rest_err.NewInternalServerError(err.Error())
 	}
-	logger.Info("User created successfully")
+	logger.Info("User created successfully", zap.String("journey", "createUser"))
 
 	value.ID = result.InsertedID.(bson.ObjectID)
 	return converter.ConvertEntityToDomain(value), nil
