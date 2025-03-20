@@ -4,10 +4,8 @@ import (
 	"context"
 	"github.com/OruamC/golang-crud-api/src/configuration/database/mongodb"
 	"github.com/OruamC/golang-crud-api/src/configuration/logger"
-	"github.com/OruamC/golang-crud-api/src/controller"
 	"github.com/OruamC/golang-crud-api/src/controller/routes"
-	"github.com/OruamC/golang-crud-api/src/model/repository"
-	"github.com/OruamC/golang-crud-api/src/model/service"
+	"github.com/OruamC/golang-crud-api/src/ioc"
 	"github.com/gin-gonic/gin"
 	"github.com/joho/godotenv"
 	"log"
@@ -27,10 +25,7 @@ func main() {
 	}
 	defer database.Client().Disconnect(context.Background())
 
-	// Init dependencies
-	repo := repository.NewUserRepository(database)
-	serviceDomain := service.NewUserDomainService(repo)
-	userController := controller.NewUserControllerInterface(serviceDomain)
+	userController := ioc.InitDependencies(database)
 
 	router := gin.Default()
 	routes.InitRoutes(&router.RouterGroup, userController)
